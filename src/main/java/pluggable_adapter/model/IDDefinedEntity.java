@@ -18,8 +18,5 @@ public abstract class IDDefinedEntity {
         return parentId;
     }
 
-    public abstract String getInfo();
-
-
     public abstract String getType();
 }

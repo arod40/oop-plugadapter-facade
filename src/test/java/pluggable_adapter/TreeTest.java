@@ -15,6 +15,6 @@ public class TreeTest {
             throw new RuntimeException(e);
         }
 
-        new SwingDisplay(gui.getJPanel());
+        new SwingDisplay(gui.getJTree());
     }
 }

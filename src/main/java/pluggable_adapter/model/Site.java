@@ -12,8 +12,8 @@ public class Site extends IDDefinedEntity{
 
 
     @Override
-    public String getInfo() {
-        return "Name: " + name + "; Attendees: " + attendees;
+    public String toString() {
+        return "(" + getType() + ")Name: " + name + "; Attendees: " + attendees;
     }
 
     @Override

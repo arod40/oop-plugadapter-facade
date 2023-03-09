@@ -9,8 +9,8 @@ public class Contest extends IDDefinedEntity{
     }
 
     @Override
-    public String getInfo() {
-        return "Name: " + name;
+    public String toString() {
+        return "(" + getType() + ") Name: " + name;
     }
 
     @Override

@@ -1,34 +1,44 @@
 package pluggable_adapter.builder;
 
 import org.apache.commons.csv.CSVRecord;
+import pluggable_adapter.model.Contest;
+import pluggable_adapter.model.IDDefinedEntity;
+import pluggable_adapter.model.Site;
 
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SwingTreeBuilder implements IDDefinedEntityCollection.Builder {
-    private String name;
-    private String type;
-    private Long id;
-    private Long parentId;
+    private Map<Long, DefaultMutableTreeNode>  id2Node = new HashMap<Long, DefaultMutableTreeNode>();
+
+    private DefaultMutableTreeNode root;
 
     public void addRecord(CSVRecord record){
-        this.id = Long.valueOf(record.get("ID"));
-        this.name = record.get("Name");
-        this.type = record.get("Type");
-        this.parentId = !record.get("ParentContestID").equals("") ? Long.valueOf(record.get("ParentContestID")) : null;
+        Long id = Long.valueOf(record.get("ID"));
+        String name = record.get("Name");
+        String type = record.get("Type");
+        Long parentId = !record.get("ParentContestID").equals("") ? Long.valueOf(record.get("ParentContestID")) : null;
+        Integer attendees = !record.get("Attendees").equals("") ? Integer.valueOf(record.get("Attendees")) : 0;
+
+        IDDefinedEntity entity;
+
+        if(type.equals("Site")){
+            entity = new Site(id, parentId, name, attendees);
+        }
+        else{
+            entity = new Contest(id, parentId, name);
+        }
+
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(entity);
+        if(id2Node.containsKey(parentId) && id2Node.get(parentId) != null)
+            id2Node.get(parentId).add(node);
+        id2Node.put(id, node);
+        if(root == null) this.root = node;
     }
 
-    public JPanel getJPanel(){
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4,2));
-        panel.add(new JLabel("Name:"));
-        panel.add(new JTextField(name));
-        panel.add(new JLabel("Type:"));
-        panel.add(new JTextField(type));
-        panel.add(new JLabel("ID:"));
-        panel.add(new JTextField(id.toString()));
-        panel.add(new JLabel("Parent ID:"));
-        panel.add(new JTextField(parentId.toString()));
-        return panel;
+    public JTree getJTree(){
+        return new JTree(root);
     }
 }
